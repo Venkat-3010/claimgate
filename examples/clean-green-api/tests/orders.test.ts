@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createOrder, markPaid } from "../src/orders.js";
 import { parseEnv } from "../src/env.js";
+import { createOrder, markPaid } from "../src/orders.js";
 
 describe("orders", () => {
   it("creates a pending order", () => {
