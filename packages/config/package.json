@@ -13,6 +13,18 @@
     }
   },
   "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Venkat-3010/claimgate.git",
+    "directory": "packages/config"
+  },
+  "homepage": "https://github.com/Venkat-3010/claimgate#readme",
+  "bugs": {
+    "url": "https://github.com/Venkat-3010/claimgate/issues"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",

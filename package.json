@@ -17,6 +17,8 @@
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "claimgate": "node packages/cli/bin/claimgate.js",
+    "demo:svg": "node scripts/generate-demo-svg.mjs",
+    "pack:check": "pnpm -r --filter \"./packages/**\" exec npm pack --dry-run",
     "clean": "turbo run clean && rimraf node_modules"
   },
   "devDependencies": {

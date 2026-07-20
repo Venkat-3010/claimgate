@@ -4,9 +4,13 @@
 
 CI proves the pipeline ran. Claimgate proves the agent's "done" matches the repo.
 
-![Claimgate demo placeholder](docs/assets/demo.gif)
+<p align="center">
+  <img src="docs/assets/demo.svg" alt="Claimgate terminal demo: clean-green PASS vs agent-cheat FAIL with evidence findings" width="980" />
+</p>
 
-> *Screenshot / GIF placeholder — replace `docs/assets/demo.gif` with a terminal recording of `claimgate verify` catching a false green.*
+<p align="center"><em>Left: honest repo passes. Right: skipped test + missing env keys — Claimgate fails with evidence.</em></p>
+
+Regenerate the demo: `node scripts/generate-demo-svg.mjs`
 
 ## Why
 
@@ -38,7 +42,7 @@ Claimgate **re-runs gates independently**, writes an **evidence pack** bound to 
 ### From this monorepo
 
 ```bash
-git clone https://github.com/YOUR_ORG/claimgate.git
+git clone https://github.com/Venkat-3010/claimgate.git
 cd claimgate
 pnpm install
 pnpm build
@@ -115,6 +119,8 @@ Policy also rejects packs whose HEAD no longer matches (when `policy.bindToHead:
 | `agent-rules` | `@claimgate/adapter-agent-rules` | Missing `AGENTS.md` (etc.) |
 | `command` | (typescript package) | Arbitrary shell exit codes |
 
+Wanted next: [Jest](https://github.com/Venkat-3010/claimgate/issues/1), [Playwright](https://github.com/Venkat-3010/claimgate/issues/2), [Prisma](https://github.com/Venkat-3010/claimgate/issues/3).
+
 ## Example: false-green demo
 
 ```bash
@@ -124,10 +130,17 @@ pnpm exec claimgate verify
 
 This demo is **expected to FAIL** (skipped test + missing Drizzle migration + env key drift). See `examples/false-green-demo/README.md`.
 
+Side-by-side:
+
+| Example | Expected |
+| --- | --- |
+| `examples/clean-green-api` | **PASS** |
+| `examples/agent-cheat-checkout` | **FAIL** |
+
 ## GitHub Action
 
 ```yaml
-- uses: YOUR_ORG/claimgate/action@v0.1
+- uses: Venkat-3010/claimgate/action@v0.1
   with:
     working-directory: .
 ```
@@ -187,9 +200,10 @@ packages/core       # packs, policy, runner
 packages/cli        # claimgate binary
 packages/mcp        # MCP server (3 tools)
 packages/adapters/* # vitest, drizzle, env, typescript, agent-rules
-examples/*          # false-green demo
+examples/*          # false-green + clean-green demos
 action/             # composite GitHub Action
 docker/             # Dockerfile + Compose
+docs/launch/        # Show HN / Reddit / DEV.to / X drafts
 ```
 
 ## Docker
@@ -206,11 +220,13 @@ docker compose -f docker/docker-compose.yml up -d
 ## Documentation
 
 - [CONTRIBUTING.md](./CONTRIBUTING.md) — includes **Good First Issues**
+- [RELEASE.md](./RELEASE.md) — npm publish steps
 - [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - [SECURITY.md](./SECURITY.md)
 - [CHANGELOG.md](./CHANGELOG.md)
 - [ROADMAP.md](./ROADMAP.md)
 - [AGENTS.md](./AGENTS.md)
+- [docs/launch/](./docs/launch/) — launch post drafts
 
 ## License
 

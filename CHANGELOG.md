@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Evidence packs bound to git HEAD with skip/delete baselines
 - MCP server with exactly three tools: `verify`, `status`, `list_gates`
 - Composite GitHub Action under `action/`
-- Example `examples/false-green-demo`
+- Examples: `false-green-demo`, `clean-green-api`, `agent-cheat-checkout`
 - Docker image + Compose stub
 - OSS meta: LICENSE (MIT), CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, ROADMAP, AGENTS.md
+- README SVG terminal demo (`docs/assets/demo.svg`) + `scripts/generate-demo-svg.mjs`
+- Launch drafts under `docs/launch/`
+- npm publish readiness: `publishConfig.access=public`, [RELEASE.md](./RELEASE.md)
