@@ -89,7 +89,7 @@ Evidence packs land in `.claimgate/packs/*.json`.
 
 | Command | Purpose |
 | --- | --- |
-| `claimgate init` | Create `claimgate.yaml` + `.claimgate/` |
+| `claimgate init` | Create `claimgate.yaml` + `.claimgate/` (stack-aware defaults) |
 | `claimgate verify` | Re-run gates; write evidence pack |
 | `claimgate status` | Show latest pack |
 | `claimgate list-gates` | List configured gates |
@@ -108,11 +108,19 @@ Each pack is JSON:
 
 Policy also rejects packs whose HEAD no longer matches (when `policy.bindToHead: true`).
 
+| Policy | Default | Meaning |
+| --- | --- | --- |
+| `bindToHead` | `true` | Pack git HEAD must match current HEAD |
+| `failOnSkippedTests` | `true` | New `it.skip` / `xit` / etc. fail the vitest gate |
+| `failOnDeletedTests` | `true` | Test files disappearing vs last pack fail the gate |
+| `failOnEmptyTests` | `true` | Empty suite / no matching tests → finding `no_tests` (not generic `test_failure`) |
+
+`claimgate init` detects the stack (package manager lockfile, Next.js, Drizzle, `.env.example`, Vitest/TS, agent rules) and only enables matching gates. For Next.js it adds lint + build command gates — build can pass while lint fails, so keep the lint gate.
 ## Adapters (v0.1)
 
 | Type | Package | Catches |
 | --- | --- | --- |
-| `vitest` | `@claimgate/adapter-vitest` | Failures, skips, deleted tests |
+| `vitest` | `@claimgate/adapter-vitest` | Failures, skips, deleted tests, empty suites (`no_tests`) |
 | `drizzle` | `@claimgate/adapter-drizzle` | Schema without migrations / hash drift |
 | `env` | `@claimgate/adapter-env` | Env-contract drift |
 | `typescript` | `@claimgate/adapter-typescript` | Typecheck failures |

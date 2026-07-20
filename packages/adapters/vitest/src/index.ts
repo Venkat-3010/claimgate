@@ -9,6 +9,8 @@ const OptionsSchema = z.object({
   command: z.string().default("pnpm exec vitest run"),
   testGlobs: z.array(z.string()).default(["**/*.{test,spec}.{ts,tsx,js,jsx,mjs,cjs}"]),
   ignore: z.array(z.string()).default(["**/node_modules/**", "**/dist/**"]),
+  /** Override policy.failOnEmptyTests for this gate */
+  failOnEmptyTests: z.boolean().optional(),
 });
 
 /** Patterns that indicate intentionally skipped tests */
@@ -18,6 +20,8 @@ const SKIP_PATTERNS: RegExp[] = [
   /\bxtest\s*\(/g,
   /\bxdescribe\s*\(/g,
 ];
+
+const EMPTY_SUITE_RE = /no test files found|no tests found|found 0 test file/i;
 
 export interface TestInventory {
   testFiles: string[];
@@ -59,6 +63,12 @@ export async function inventoryTests(
   };
 }
 
+/** True when inventory is empty or Vitest reports an empty suite. */
+export function isEmptyTestSuite(testFileCount: number, stdout: string, stderr: string): boolean {
+  if (testFileCount === 0) return true;
+  return EMPTY_SUITE_RE.test(`${stdout}\n${stderr}`);
+}
+
 export function createVitestAdapter(): GateAdapter {
   return {
     type: "vitest",
@@ -71,6 +81,7 @@ export function createVitestAdapter(): GateAdapter {
       const options = parsed.data;
       const cwd = resolveGateCwd(ctx.root, ctx.gate.cwd);
       const findings: Finding[] = [];
+      const failOnEmpty = options.failOnEmptyTests ?? ctx.config.policy.failOnEmptyTests;
 
       const inventory = await inventoryTests(cwd, options.testGlobs, options.ignore);
       const skipLabels = inventory.skipped.map((s) => `${s.file}:${s.kind}`);
@@ -118,16 +129,30 @@ export function createVitestAdapter(): GateAdapter {
         });
       }
 
-      if (cmd.exitCode !== 0) {
+      const emptySuite = isEmptyTestSuite(inventory.testFiles.length, cmd.stdout, cmd.stderr);
+
+      if (emptySuite && failOnEmpty) {
         findings.push({
-          code: "test_failure",
+          code: "no_tests",
           severity: "error",
-          message: `Vitest exited with code ${cmd.exitCode}`,
-          meta: {
-            stderrTail: cmd.stderr.slice(-2000),
-            stdoutTail: cmd.stdout.slice(-2000),
-          },
+          message:
+            inventory.testFiles.length === 0
+              ? "No test files found matching configured globs"
+              : "Vitest reported an empty test suite",
         });
+      } else if (cmd.exitCode !== 0) {
+        // Empty suite with failOnEmptyTests:false — treat like --passWithNoTests (ignore exit)
+        if (!(emptySuite && !failOnEmpty)) {
+          findings.push({
+            code: "test_failure",
+            severity: "error",
+            message: `Vitest exited with code ${cmd.exitCode}`,
+            meta: {
+              stderrTail: cmd.stderr.slice(-2000),
+              stdoutTail: cmd.stdout.slice(-2000),
+            },
+          });
+        }
       }
 
       // False green: agent claims pass but exit nonzero — already covered by exit check.
@@ -140,7 +165,10 @@ export function createVitestAdapter(): GateAdapter {
         relativeRoot: relative(ctx.root, cwd) || ".",
       };
 
-      if (findings.some((f) => f.severity === "error") || cmd.exitCode !== 0) {
+      if (
+        findings.some((f) => f.severity === "error") ||
+        (cmd.exitCode !== 0 && !(emptySuite && !failOnEmpty))
+      ) {
         return {
           ...failResult(
             ctx.gate,

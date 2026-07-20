@@ -26,6 +26,7 @@ policy:
   bindToHead: true
   failOnSkippedTests: true
   failOnDeletedTests: true
+  failOnEmptyTests: true
 
 evidence:
   packDir: .claimgate/packs

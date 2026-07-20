@@ -48,6 +48,7 @@ describe("evaluatePackPolicy", () => {
       bindToHead: true,
       failOnSkippedTests: true,
       failOnDeletedTests: true,
+      failOnEmptyTests: true,
     },
   } satisfies ClaimgateConfig;
 

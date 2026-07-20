@@ -5,7 +5,12 @@ import { createDrizzleAdapter } from "@claimgate/adapter-drizzle";
 import { createEnvAdapter } from "@claimgate/adapter-env";
 import { createCommandAdapter, createTypescriptAdapter } from "@claimgate/adapter-typescript";
 import { createVitestAdapter } from "@claimgate/adapter-vitest";
-import { defaultConfigYaml, findConfigPath, loadConfig } from "@claimgate/config";
+import {
+  defaultConfigYaml,
+  detectProjectStack,
+  findConfigPath,
+  loadConfig,
+} from "@claimgate/config";
 import {
   type EvidencePack,
   createAdapterRegistry,
@@ -83,12 +88,26 @@ export async function runCli(argv: string[]): Promise<void> {
         return;
       }
       const name = opts.name ?? root.split(/[/\\]/).filter(Boolean).pop() ?? "project";
-      const yaml = defaultConfigYaml(name);
+      const stack = await detectProjectStack(root);
+      const yaml = defaultConfigYaml(name, stack);
       const path = join(root, "claimgate.yaml");
       await writeFile(path, yaml, "utf8");
       await mkdir(join(root, ".claimgate", "packs"), { recursive: true });
       await writeFile(join(root, ".claimgate", "packs", ".gitkeep"), "", "utf8");
       console.log(pc.green(`Created ${path}`));
+      const detected: string[] = [stack.packageManager];
+      if (stack.hasTypescript) detected.push("typescript");
+      if (stack.hasVitest) detected.push("vitest");
+      if (stack.hasNext) detected.push("next");
+      if (stack.hasDrizzle) detected.push("drizzle");
+      if (stack.hasEnvExample) detected.push("env");
+      if (stack.hasAgentRules) detected.push("agent-rules");
+      console.log(pc.dim(`Detected: ${detected.join(", ")}`));
+      if (stack.hasNext) {
+        console.log(
+          pc.dim("Note: Next.js build can pass while lint fails — a lint gate was included."),
+        );
+      }
       console.log("Next: edit gates, then run `claimgate verify`");
     });
 
@@ -98,7 +117,9 @@ export async function runCli(argv: string[]): Promise<void> {
     .option("-c, --config <path>", "Path to claimgate.yaml")
     .option("--only <ids>", "Comma-separated gate ids to run")
     .option("--json", "Print the evidence pack as JSON", false)
-    .option("--no-write", "Do not write pack to disk", false)
+    // Lone --no-* defaults write=true in Commander; do not pass `false` as default
+    // or packs never persist (opts.write stays false and status finds nothing).
+    .option("--no-write", "Do not write pack to disk")
     .action(
       async (opts: {
         config?: string;

@@ -45,6 +45,8 @@ export const ClaimgateConfigSchema = z.object({
       failOnSkippedTests: z.boolean().default(true),
       /** Fail if test file count drops vs baseline pack */
       failOnDeletedTests: z.boolean().default(true),
+      /** Fail when vitest finds no test files / empty suite (finding code: no_tests) */
+      failOnEmptyTests: z.boolean().default(true),
     })
     .default({}),
 });

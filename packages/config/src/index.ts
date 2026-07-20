@@ -14,3 +14,11 @@ export {
   findConfigPath,
   loadConfig,
 } from "./load.js";
+
+export {
+  detectPackageManager,
+  detectProjectStack,
+  packageManagerExec,
+  type PackageManager,
+  type ProjectStack,
+} from "./detect.js";
