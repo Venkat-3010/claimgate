@@ -1,0 +1,10 @@
+services:
+  # Optional local SQLite volume mount for future dashboard / pack archive
+  claimgate-data:
+    image: alpine:3.20
+    command: ["sleep", "infinity"]
+    volumes:
+      - claimgate_packs:/data/packs
+
+volumes:
+  claimgate_packs:

@@ -1,0 +1,21 @@
+{
+  "name": "@claimgate/example-false-green",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Demo app that Claimgate catches as a false green",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify": "claimgate verify",
+    "verify:expect-fail": "claimgate verify || node -e \"process.exit(0)\""
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.38.3"
+  },
+  "devDependencies": {
+    "@claimgate/cli": "workspace:*",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

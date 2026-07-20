@@ -1,0 +1,54 @@
+name: Claimgate
+description: Re-run Claimgate gates in CI. Do not trust local evidence packs for merge.
+author: Claimgate
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  working-directory:
+    description: Directory containing claimgate.yaml
+    required: false
+    default: "."
+  config:
+    description: Optional path to claimgate.yaml
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Install Claimgate CLI
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        if [ -f pnpm-lock.yaml ] || [ -f pnpm-workspace.yaml ]; then
+          corepack enable
+          corepack prepare pnpm@9.15.0 --activate
+          pnpm install --frozen-lockfile || pnpm install
+          pnpm --filter @claimgate/cli build || true
+          pnpm exec claimgate --version || npx --yes claimgate@latest --version || true
+        else
+          npm install --no-save claimgate@latest || npm install --no-save @claimgate/cli@latest
+        fi
+
+    - name: Verify gates
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        ARGS=()
+        if [ -n "${{ inputs.config }}" ]; then
+          ARGS+=(--config "${{ inputs.config }}")
+        fi
+        if command -v pnpm >/dev/null 2>&1 && pnpm exec claimgate --help >/dev/null 2>&1; then
+          pnpm exec claimgate verify "${ARGS[@]}"
+        elif command -v claimgate >/dev/null 2>&1; then
+          claimgate verify "${ARGS[@]}"
+        else
+          npx --yes claimgate verify "${ARGS[@]}"
+        fi

@@ -1,0 +1,31 @@
+{
+  "name": "claimgate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Evidence-gated verification for AI coding agents. Don't trust the agent. Trust the evidence.",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run build --filter=@claimgate/cli && node packages/cli/bin/claimgate.js --help",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "claimgate": "node packages/cli/bin/claimgate.js",
+    "clean": "turbo run clean && rimraf node_modules"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@claimgate/cli": "workspace:*",
+    "@types/node": "^22.10.2",
+    "rimraf": "^6.0.1",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

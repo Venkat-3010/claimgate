@@ -1,0 +1,27 @@
+name: Claimgate (example)
+
+# Copy this workflow into consuming repos, or use the composite action from this repo.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  claimgate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Claimgate verify
+        working-directory: examples/false-green-demo
+        run: |
+          # In a real app this should exit 0. This demo is expected to fail.
+          pnpm exec claimgate verify || true

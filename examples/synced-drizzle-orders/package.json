@@ -1,0 +1,20 @@
+{
+  "name": "@claimgate/example-synced-drizzle-orders",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Drizzle schema + migrations in sync; should PASS claimgate verify",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify": "node ../../packages/cli/bin/claimgate.js verify"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.38.3"
+  },
+  "devDependencies": {
+    "@claimgate/cli": "workspace:*",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

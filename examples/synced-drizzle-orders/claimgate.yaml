@@ -1,0 +1,40 @@
+version: 1
+name: synced-drizzle-orders
+
+gates:
+  - id: typecheck
+    type: typescript
+    description: TypeScript must compile
+    options:
+      command: pnpm exec tsc --noEmit
+
+  - id: unit-tests
+    type: vitest
+    description: Order helpers must pass
+    options:
+      command: pnpm exec vitest run
+      testGlobs:
+        - "tests/**/*.{test,spec}.ts"
+
+  - id: drizzle
+    type: drizzle
+    description: Schema and migrations stay in sync
+    options:
+      schemaPath: src/db/schema.ts
+      migrationsDir: drizzle
+
+  - id: env
+    type: env
+    description: Env contract
+    options:
+      examplePath: .env.example
+      envPath: runtime.env
+
+policy:
+  bindToHead: true
+  failOnSkippedTests: true
+  failOnDeletedTests: true
+
+evidence:
+  packDir: .claimgate/packs
+  retain: 10

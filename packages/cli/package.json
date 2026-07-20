@@ -1,0 +1,41 @@
+{
+  "name": "@claimgate/cli",
+  "version": "0.1.0",
+  "description": "Claimgate CLI — evidence-gated verification for AI coding agents",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "claimgate": "./bin/claimgate.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "bin"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "start": "node ./bin/claimgate.js",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@claimgate/adapter-agent-rules": "workspace:*",
+    "@claimgate/adapter-drizzle": "workspace:*",
+    "@claimgate/adapter-env": "workspace:*",
+    "@claimgate/adapter-typescript": "workspace:*",
+    "@claimgate/adapter-vitest": "workspace:*",
+    "@claimgate/config": "workspace:*",
+    "@claimgate/core": "workspace:*",
+    "commander": "^12.1.0",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

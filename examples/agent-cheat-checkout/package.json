@@ -1,0 +1,17 @@
+{
+  "name": "@claimgate/example-agent-cheat-checkout",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Looks green but Claimgate catches skipped tests and env drift",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "verify": "node ../../packages/cli/bin/claimgate.js verify"
+  },
+  "devDependencies": {
+    "@claimgate/cli": "workspace:*",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

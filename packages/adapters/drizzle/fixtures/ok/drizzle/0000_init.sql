@@ -1,0 +1,2 @@
+-- placeholder migration
+CREATE TABLE users (id INTEGER PRIMARY KEY, email TEXT NOT NULL);

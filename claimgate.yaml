@@ -1,0 +1,32 @@
+version: 1
+name: claimgate
+
+gates:
+  - id: typecheck
+    type: typescript
+    description: Monorepo typecheck via turbo
+    options:
+      command: pnpm typecheck
+
+  - id: unit-tests
+    type: vitest
+    description: Package unit tests
+    options:
+      command: pnpm test
+      testGlobs:
+        - "packages/**/tests/**/*.{test,spec}.ts"
+
+  - id: agent-rules
+    type: agent-rules
+    options:
+      requiredFiles:
+        - AGENTS.md
+
+policy:
+  bindToHead: true
+  failOnSkippedTests: true
+  failOnDeletedTests: true
+
+evidence:
+  packDir: .claimgate/packs
+  retain: 20

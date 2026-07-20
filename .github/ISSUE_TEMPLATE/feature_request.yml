@@ -1,0 +1,24 @@
+name: Feature request
+description: Propose a feature or adapter
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What false-green or workflow gap are you solving?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+    validations:
+      required: true
+  - type: checkboxes
+    id: mcp
+    attributes:
+      label: MCP impact
+      options:
+        - label: This would require a new MCP tool (needs maintainers + major version)

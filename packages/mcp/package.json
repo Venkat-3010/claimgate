@@ -1,0 +1,40 @@
+{
+  "name": "@claimgate/mcp",
+  "version": "0.1.0",
+  "description": "Claimgate MCP server — verify, status, list_gates",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "claimgate-mcp": "./bin/claimgate-mcp.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist", "bin"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@claimgate/adapter-agent-rules": "workspace:*",
+    "@claimgate/adapter-drizzle": "workspace:*",
+    "@claimgate/adapter-env": "workspace:*",
+    "@claimgate/adapter-typescript": "workspace:*",
+    "@claimgate/adapter-vitest": "workspace:*",
+    "@claimgate/config": "workspace:*",
+    "@claimgate/core": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

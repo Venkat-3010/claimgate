@@ -1,0 +1,14 @@
+---
+description: Claimgate project conventions for Cursor agents
+globs:
+alwaysApply: true
+---
+
+# Claimgate
+
+- Evidence-gated verification CLI/Action/MCP. Don't trust the agent; trust the evidence.
+- MCP tools must remain exactly: verify, status, list_gates.
+- Strict TypeScript, no `any`. Prefer Zod for config/IO.
+- Smallest correct change; no speculative abstractions.
+- `examples/false-green-demo` is supposed to fail verification.
+- Never log env secret values.
